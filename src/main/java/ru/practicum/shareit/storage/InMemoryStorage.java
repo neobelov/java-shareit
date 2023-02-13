@@ -5,10 +5,9 @@ import ru.practicum.shareit.exceptions.ResourceNotFoundException;
 
 import java.util.*;
 
-@Component
 public class InMemoryStorage<T extends StorageObject<T>> implements Storage<T> {
     Map<Integer, T> objects = new HashMap<>();
-    int prevId = 0;
+    Integer prevId = 0;
 
     @Override
     public T post(T obj) {

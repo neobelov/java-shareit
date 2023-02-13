@@ -1,16 +1,17 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.DuplicateUserEmailException;
-import ru.practicum.shareit.storage.Storage;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.*;
 
 @Component
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final Storage<User> userStorage;
+    private final UserStorage userStorage;
     Map<String, User> usersByEmail = new HashMap<>();
 
     @Override
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
             usersByEmail.remove(user.getEmail());
         }
         user = user.patch(obj);
+        userStorage.put(user);
         usersByEmail.put(user.getEmail(), user);
         return user;
     }

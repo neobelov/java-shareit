@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.model;
 
 import lombok.*;
 import ru.practicum.shareit.storage.StorageObject;
@@ -16,11 +16,15 @@ import javax.validation.constraints.NotNull;
 public class User implements StorageObject<User> {
     private Integer id;
 
-    @NotNull(groups = PostInfo.class) @NotEmpty(groups = PostInfo.class) @NotBlank(groups = PostInfo.class)
+    @NotNull(groups = PostInfo.class, message = "User name can't be null")
+    @NotEmpty(groups = PostInfo.class, message = "User name can't be empty")
+    @NotBlank(groups = PostInfo.class, message = "User name can't be blank")
     private String name;
 
-    @Email
-    @NotNull(groups = PostInfo.class) @NotEmpty(groups = PostInfo.class) @NotBlank(groups = PostInfo.class)
+    @Email (message = "User email must be valid email")
+    @NotNull(groups = PostInfo.class, message = "User email can't be null")
+    @NotEmpty(groups = PostInfo.class, message = "User email can't be empty")
+    @NotBlank(groups = PostInfo.class, message = "User email can't be blank")
     private String email;
 
     public User patch(User obj) {

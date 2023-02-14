@@ -2,7 +2,7 @@ package ru.practicum.shareit.storage;
 
 import java.util.List;
 
-public interface Storage <T extends StorageObject<T>> {
+public interface Storage<T extends StorageObject<T>> {
     T post(T obj);
 
     T put(T obj);

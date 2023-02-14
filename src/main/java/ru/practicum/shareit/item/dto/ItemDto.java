@@ -1,12 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import ru.practicum.shareit.exceptions.validation.PostInfo;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.storage.StorageObject;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -31,4 +26,5 @@ public class ItemDto {
 
     @NotNull(groups = PostInfo.class, message = "Item availability must be sent")
     private Boolean available;
+
 }

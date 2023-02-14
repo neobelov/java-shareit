@@ -59,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getAllWithOwnerCheck(Integer owner) {
-        return itemStorage.getAll().stream().filter(o-> Objects.equals(o.getOwner(), owner)).collect(Collectors.toList());
+        return itemStorage.getAll().stream().filter(o -> Objects.equals(o.getOwner(), owner)).collect(Collectors.toList());
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
         return itemStorage.getAll().parallelStream()
-                .filter(o->
+                .filter(o ->
                         (o.getName().toUpperCase().contains(text.toUpperCase()) || o.getDescription().toUpperCase().contains(text.toUpperCase()))
                         && o.getAvailable())
                 .collect(Collectors.toList());

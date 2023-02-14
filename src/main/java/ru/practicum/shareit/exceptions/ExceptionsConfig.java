@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptions.validation.ModelValidationException;
 
 @RestControllerAdvice
 @Slf4j
@@ -20,7 +19,7 @@ public class ExceptionsConfig {
             errorBuilder.append(fieldError.getDefaultMessage());
             errorBuilder.append(" AND ");
         }
-        String errorMessages = errorBuilder.substring(0, errorBuilder.length()-5);
+        String errorMessages = errorBuilder.substring(0, errorBuilder.length() - 5);
         log.warn(errorMessages);
         return new ErrorResponse("error", errorMessages);
     }

@@ -23,10 +23,12 @@ public class UserController {
     public List<User> getAll() {
         return userService.getAll();
     }
+
     @GetMapping("/{userId}")
     public User getById(@PathVariable int userId) {
         return userService.getById(userId);
     }
+
     @PostMapping
     public User post(@Validated({PostInfo.class, Default.class}) @RequestBody User user) {
         return userService.post(user);
@@ -42,4 +44,5 @@ public class UserController {
     public User delete(@PathVariable Integer userId) {
         return userService.delete(userId);
     }
+
 }

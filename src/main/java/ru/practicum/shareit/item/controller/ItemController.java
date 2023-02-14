@@ -25,6 +25,7 @@ public class ItemController {
     public List<ItemDto> getAllWithOwnerCheck(@RequestHeader("X-Sharer-User-Id") Integer owner) {
         return itemService.getAllWithOwnerCheck(owner).parallelStream().map(item -> (ItemDto) item).collect(Collectors.toList());
     }
+
     @GetMapping("/{itemId}")
     public ItemDto getById(@PathVariable int itemId) {
         return itemService.getById(itemId);
@@ -32,7 +33,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
-        return itemService.searchItems(text).parallelStream().map(item->(ItemDto) item).collect(Collectors.toList());
+        return itemService.searchItems(text).parallelStream().map(item -> (ItemDto) item).collect(Collectors.toList());
     }
 
     @PostMapping

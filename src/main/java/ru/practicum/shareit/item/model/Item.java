@@ -10,6 +10,7 @@ import ru.practicum.shareit.storage.StorageObject;
 @Data
 public class Item extends ItemDto implements StorageObject<Item> {
     private Integer owner;
+
     public Item patch(Item item) {
         if (item.getId() != null) {
             this.setId(item.getId());

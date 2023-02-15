@@ -27,16 +27,4 @@ public class User implements StorageObject<User> {
     @NotBlank(groups = PostInfo.class, message = "User email can't be blank")
     private String email;
 
-    public User patch(User obj) {
-        if (obj.getId() != null) {
-            this.id = obj.getId();
-        }
-        if (obj.getName() != null) {
-            this.name = obj.getName();
-        }
-        if (obj.getEmail() != null) {
-            this.email = obj.getEmail();
-        }
-        return this;
-    }
 }

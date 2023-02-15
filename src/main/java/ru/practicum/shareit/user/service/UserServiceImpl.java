@@ -35,8 +35,11 @@ public class UserServiceImpl implements UserService {
                 throw new DuplicateUserEmailException("User with email " + obj.getEmail() + " already exists");
             }
             usersByEmail.remove(user.getEmail());
+            user.setEmail(obj.getEmail());
         }
-        user = user.patch(obj);
+        if (obj.getName() != null) {
+            user.setName(obj.getName());
+        }
         userStorage.put(user);
         usersByEmail.put(user.getEmail(), user);
         return user;

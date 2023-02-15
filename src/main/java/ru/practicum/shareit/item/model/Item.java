@@ -1,29 +1,34 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
+import ru.practicum.shareit.exceptions.validation.PostInfo;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.storage.StorageObject;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * TODO Sprint add-controllers.
  */
 @Data
-public class Item extends ItemDto implements StorageObject<Item> {
+public class Item implements StorageObject<Item> {
+    private Integer id;
+
+    @NotNull(groups = PostInfo.class, message = "Item name can't be null")
+    @NotEmpty(groups = PostInfo.class, message = "Item name can't be empty")
+    @NotBlank(groups = PostInfo.class, message = "Item name can't be blank")
+    private String name;
+
+    @NotNull(groups = PostInfo.class, message = "Item description can't be null")
+    @NotEmpty(groups = PostInfo.class, message = "Item description can't be empty")
+    @NotBlank(groups = PostInfo.class, message = "Item description can't be blank")
+    private String description;
+
+    @NotNull(groups = PostInfo.class, message = "Item availability must be sent")
+    private Boolean available;
+
     private Integer owner;
 
-    public Item patch(Item item) {
-        if (item.getId() != null) {
-            this.setId(item.getId());
-        }
-        if (item.getName() != null) {
-            this.setName(item.getName());
-        }
-        if (item.getDescription() != null) {
-            this.setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            this.setAvailable(item.getAvailable());
-        }
-        return this;
-    }
 }

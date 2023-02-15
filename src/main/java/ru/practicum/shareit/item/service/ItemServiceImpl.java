@@ -38,7 +38,15 @@ public class ItemServiceImpl implements ItemService {
         if (!Objects.equals(item.getOwner(), obj.getOwner())) {
             throw new NoRightsException(obj.getOwner() + " doesn't have rights to change this item");
         }
-        item = item.patch(obj);
+        if (obj.getName() != null) {
+            item.setName(obj.getName());
+        }
+        if (obj.getDescription() != null) {
+            item.setDescription(obj.getDescription());
+        }
+        if (obj.getAvailable() != null) {
+            item.setAvailable(obj.getAvailable());
+        }
         itemStorage.put(item);
         return item;
     }

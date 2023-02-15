@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.model;
 
 import lombok.Data;
 import ru.practicum.shareit.exceptions.validation.PostInfo;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.storage.StorageObject;
 
 import javax.validation.constraints.NotBlank;

@@ -25,7 +25,7 @@ public class ItemController {
     private final ItemMapper itemMapper = new ItemMapper();
 
     @GetMapping
-    public List<ItemDto> getAllWithOwnerCheck(@RequestHeader(Constants.sharerUserIdHttpHeader) Integer owner) {
+    public List<ItemDto> getAllWithOwnerCheck(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Integer owner) {
         return itemService.getAllWithOwnerCheck(owner).parallelStream().map(itemMapper::mapToItemDto).collect(Collectors.toList());
     }
 
@@ -40,20 +40,20 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto post(@RequestHeader(Constants.sharerUserIdHttpHeader) Integer owner, @Validated({PostInfo.class, Default.class}) @RequestBody Item item) {
+    public ItemDto post(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Integer owner, @Validated({PostInfo.class, Default.class}) @RequestBody Item item) {
         item.setOwner(owner);
         return itemMapper.mapToItemDto(itemService.post(item));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto patch(@RequestHeader(Constants.sharerUserIdHttpHeader) Integer owner, @Validated(Default.class) @RequestBody Item item, @PathVariable Integer itemId) {
+    public ItemDto patch(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Integer owner, @Validated(Default.class) @RequestBody Item item, @PathVariable Integer itemId) {
         item.setId(itemId);
         item.setOwner(owner);
         return itemMapper.mapToItemDto(itemService.patch(item));
     }
 
     @DeleteMapping("/{itemId}")
-    public ItemDto delete(@RequestHeader(Constants.sharerUserIdHttpHeader) Integer owner, @PathVariable Integer itemId) {
+    public ItemDto delete(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Integer owner, @PathVariable Integer itemId) {
         return itemMapper.mapToItemDto(itemService.deleteWithOwnerCheck(itemId, owner));
     }
 }

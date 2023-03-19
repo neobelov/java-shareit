@@ -1,64 +1,76 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.DuplicateUserEmailException;
+import ru.practicum.shareit.exceptions.ResourceNotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.*;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
-    Map<String, User> usersByEmail = new HashMap<>();
+    private final UserRepository userRepository;
 
     @Override
-    public User post(User obj) {
-        if (usersByEmail.putIfAbsent(obj.getEmail(), obj) != null) {
-            throw new DuplicateUserEmailException("User with email " + obj.getEmail() + " already exists");
+    public User add(User user) {
+        Optional<User> userWithNewEmail = userRepository.findByEmail(user.getEmail());
+        if (userWithNewEmail.isPresent()) {
+            throw new DuplicateUserEmailException("user with email " + user.getEmail() + " already exists");
         }
-        return userStorage.post(obj);
+        return userRepository.save(user);
     }
 
     @Override
-    public User put(User obj) {
-        return userStorage.put(obj);
+    public User replace(User user) {
+        if (!existsById(user.getId())) {
+            throw new ResourceNotFoundException("user with id " + user.getId() + " is not found");
+        }
+        return userRepository.save(user);
     }
 
     @Override
-    public User patch(User obj) {
-        User user = userStorage.getById(obj.getId());
-        if (obj.getEmail() != null) {
-            if (usersByEmail.containsKey(obj.getEmail()) && !Objects.equals(usersByEmail.get(obj.getEmail()).getId(), obj.getId())) {
-                throw new DuplicateUserEmailException("User with email " + obj.getEmail() + " already exists");
+    public Boolean existsById(Long userId) {
+        return userRepository.existsById(userId);
+    }
+
+    @Override
+    public User getById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new ResourceNotFoundException("user with id " + id + " is not found");
+        }
+        return userOptional.get();
+    }
+
+    @Override
+    public User update(User user) {
+        User userForUpdate = getById(user.getId());
+        if (user.getEmail() != null) {
+            Optional<User> userWithNewEmail = userRepository.findByEmail(user.getEmail());
+            if (userWithNewEmail.isPresent()) {
+                throw new DuplicateUserEmailException("user with email " + user.getEmail() + " already exists");
             }
-            usersByEmail.remove(user.getEmail());
-            user.setEmail(obj.getEmail());
+            userForUpdate.setEmail(user.getEmail());
         }
-        if (obj.getName() != null) {
-            user.setName(obj.getName());
+        if (user.getName() != null) {
+            userForUpdate.setName(user.getName());
         }
-        userStorage.put(user);
-        usersByEmail.put(user.getEmail(), user);
-        return user;
+        return userRepository.save(userForUpdate);
     }
 
     @Override
-    public User delete(Integer id) {
-        User user = userStorage.delete(id);
-        usersByEmail.remove(user.getEmail());
-        return user;
+    public void deleteById(Long id) {
+        if (!existsById(id)) {
+            throw new ResourceNotFoundException("user with id " + id + " is not found");
+        }
+        userRepository.deleteById(id);
     }
 
     @Override
     public List<User> getAll() {
-        return userStorage.getAll();
-    }
-
-    @Override
-    public User getById(Integer id) {
-        return userStorage.getById(id);
+        return userRepository.findAll();
     }
 }

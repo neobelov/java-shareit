@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ItemDto {
-    private Integer id;
+    private Long id;
 
     private String name;
 

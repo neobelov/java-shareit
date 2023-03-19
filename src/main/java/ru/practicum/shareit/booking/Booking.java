@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
-/**
- * TODO Sprint add-bookings.
- */
+import java.time.LocalDateTime;
+
 public class Booking {
 }

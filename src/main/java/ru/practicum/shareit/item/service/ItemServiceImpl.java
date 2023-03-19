@@ -2,72 +2,78 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.NoRightsException;
+import ru.practicum.shareit.exceptions.ResourceNotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final ItemStorage itemStorage;
+    private final ItemRepository itemRepository;
     private final UserService userService;
 
-    public Item post(Item obj) {
-        User user = userService.getById(obj.getOwner());
-        return itemStorage.post(obj);
+    @Override
+    public Item add(Item item) {
+        Long owner = item.getOwner();
+        if (!userService.existsById(owner)) {
+            throw new ResourceNotFoundException("owner with id " + owner + "doesn't exist");
+        }
+        return itemRepository.save(item);
     }
 
     @Override
-    public Item put(Item obj) {
-        if (!Objects.equals(itemStorage.getById(obj.getId()).getOwner(), obj.getOwner())) {
-            throw new NoRightsException(obj.getOwner() + " doesn't have rights to change this item");
+    public Item replace(Item item) {
+        Item existingItem = getById(item.getId());
+        if (!Objects.equals(existingItem.getOwner(), item.getOwner())) {
+            throw new NoRightsException(item.getOwner() + " doesn't have rights to change this item");
         }
-        return itemStorage.put(obj);
+        return itemRepository.save(item);
     }
 
     @Override
-    public Item patch(Item obj) {
-        Item item = itemStorage.getById(obj.getId());
-        if (!Objects.equals(item.getOwner(), obj.getOwner())) {
-            throw new NoRightsException(obj.getOwner() + " doesn't have rights to change this item");
+    public Item update(Item item) {
+        Item existingItem = getById(item.getId());
+        if (!Objects.equals(existingItem.getOwner(), item.getOwner())) {
+            throw new NoRightsException(existingItem.getOwner() + " doesn't have rights to change this item");
         }
-        if (obj.getName() != null) {
-            item.setName(obj.getName());
+        if (item.getName() != null) {
+            existingItem.setName(item.getName());
         }
-        if (obj.getDescription() != null) {
-            item.setDescription(obj.getDescription());
+        if (item.getDescription() != null) {
+            existingItem.setDescription(item.getDescription());
         }
-        if (obj.getAvailable() != null) {
-            item.setAvailable(obj.getAvailable());
+        if (item.getAvailable() != null) {
+            existingItem.setAvailable(item.getAvailable());
         }
-        itemStorage.put(item);
-        return item;
+        return itemRepository.save(existingItem);
     }
 
     @Override
-    public Item deleteWithOwnerCheck(Integer id, Integer owner) {
-        Item item = itemStorage.getById(id);
-        if (!Objects.equals(item.getOwner(), owner)) {
+    public void deleteWithOwnerCheck(Long id, Long owner) {
+        Item existingItem = getById(id);
+        if (!Objects.equals(existingItem.getOwner(), owner)) {
             throw new NoRightsException(owner + " doesn't have rights to change this item");
         }
-        return itemStorage.delete(id);
+        itemRepository.deleteById(id);
     }
 
     @Override
     public List<Item> getAll() {
-        return itemStorage.getAll();
+        return itemRepository.findAll();
     }
 
     @Override
-    public List<Item> getAllWithOwnerCheck(Integer owner) {
-        return itemStorage.getAll().stream().filter(o -> Objects.equals(o.getOwner(), owner)).collect(Collectors.toList());
+    public List<Item> getAllWithOwnerCheck(Long owner) {
+        return itemRepository.findByOwnerEquals(owner);
     }
 
     @Override
@@ -75,21 +81,25 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty() || text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemStorage.getAll().parallelStream()
-                .filter(o ->
-                        (o.getName().toUpperCase().contains(text.toUpperCase()) || o.getDescription().toUpperCase().contains(text.toUpperCase()))
-                        && o.getAvailable())
-                .collect(Collectors.toList());
+        return itemRepository.searchItems();
     }
 
     @Override
-    public Item getById(Integer id) {
-        return itemStorage.getById(id);
+    public Item getById(Long id) {
+        Optional<Item> itemOptional = itemRepository.findById(id);
+        if (itemOptional.isEmpty()) {
+            throw new ResourceNotFoundException("item with id " + id + " is not found");
+        }
+        return itemOptional.get();
     }
 
     @Override
-    public Item delete(Integer id) {
-        return null;
+    public void deleteById(Long id) {
+        itemRepository.deleteById(id);
     }
 
+    @Override
+    public Boolean exists(Long id) {
+        return itemRepository.existsById(id);
+    }
 }

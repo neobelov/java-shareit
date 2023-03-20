@@ -1,6 +1,8 @@
 package ru.practicum.shareit.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLException;
 
 @RestControllerAdvice
 @Slf4j
@@ -37,6 +41,13 @@ public class ExceptionsConfig {
     public ErrorResponse handleConflict(RuntimeException ex) {
         log.warn(ex.getMessage());
         return new ErrorResponse("error", ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ErrorResponse handleIntegrityException(ConstraintViolationException ex) {
+        log.warn(ex.getSQLException().getMessage());
+        return new ErrorResponse("database constraint violation", ex.getSQLException().getMessage());
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)

@@ -16,10 +16,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User add(User user) {
-        Optional<User> userWithNewEmail = userRepository.findByEmail(user.getEmail());
-        if (userWithNewEmail.isPresent()) {
-            throw new DuplicateUserEmailException("user with email " + user.getEmail() + " already exists");
-        }
         return userRepository.save(user);
     }
 
@@ -49,10 +45,6 @@ public class UserServiceImpl implements UserService {
     public User update(User user) {
         User userForUpdate = getById(user.getId());
         if (user.getEmail() != null) {
-            Optional<User> userWithNewEmail = userRepository.findByEmail(user.getEmail());
-            if (userWithNewEmail.isPresent()) {
-                throw new DuplicateUserEmailException("user with email " + user.getEmail() + " already exists");
-            }
             userForUpdate.setEmail(user.getEmail());
         }
         if (user.getName() != null) {

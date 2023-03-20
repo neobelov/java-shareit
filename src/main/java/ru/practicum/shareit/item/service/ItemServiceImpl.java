@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isEmpty() || text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemRepository.searchItems();
+        return itemRepository.searchItems(text);
     }
 
     @Override

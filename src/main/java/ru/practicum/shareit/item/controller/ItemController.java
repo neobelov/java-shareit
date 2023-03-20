@@ -36,15 +36,15 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto post(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long owner, @Validated({PostInfo.class, Default.class}) @RequestBody Item item) {
-        item.setOwner(owner);
+    public ItemDto post(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long owner, @Validated({PostInfo.class, Default.class}) @RequestBody ItemDto itemDto) {
+        Item item = itemMapper.mapToItem(itemDto, owner);
         return itemMapper.mapToItemDto(itemService.add(item));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto patch(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long owner, @Validated(Default.class) @RequestBody Item item, @PathVariable Long itemId) {
-        item.setId(itemId);
-        item.setOwner(owner);
+    public ItemDto patch(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long owner, @Validated(Default.class) @RequestBody ItemDto itemDto, @PathVariable Long itemId) {
+        itemDto.setId(itemId);
+        Item item = itemMapper.mapToItem(itemDto, owner);
         return itemMapper.mapToItemDto(itemService.update(item));
     }
 

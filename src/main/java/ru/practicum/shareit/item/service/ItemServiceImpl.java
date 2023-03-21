@@ -1,25 +1,31 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.NoRightsException;
 import ru.practicum.shareit.exceptions.ResourceNotFoundException;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemWithBookings;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final BookingRepository bookingRepository;
     private final UserService userService;
+    private final ItemMapper itemMapper = new ItemMapper();
 
     @Override
     public Item add(Item item) {
@@ -58,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteWithOwnerCheck(Long id, Long owner) {
+    public void delete(Long id, Long owner) {
         Item existingItem = getById(id);
         if (!Objects.equals(existingItem.getOwner(), owner)) {
             throw new NoRightsException(owner + " doesn't have rights to change this item");
@@ -67,13 +73,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAll() {
-        return itemRepository.findAll();
-    }
-
-    @Override
-    public List<Item> getAllWithOwnerCheck(Long owner) {
-        return itemRepository.findByOwnerEquals(owner);
+    public List<ItemWithBookings> getAll(Long owner) {
+        List<Item> items = itemRepository.findByOwnerEqualsOrderById(owner);
+        return items.parallelStream().map(i->getWithBookingsById(i.getId(),owner)).collect(Collectors.toList());
     }
 
     @Override
@@ -94,8 +96,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        itemRepository.deleteById(id);
+    public ItemWithBookings getWithBookingsById(Long id, Long ownerId) {
+        Item item = getById(id);
+        if (!Objects.equals(item.getOwner(), ownerId)) {
+            return itemMapper.mapToItemWithBookings(item, new Booking(), new Booking());
+        }
+        Optional<Booking> lastBooking = bookingRepository.findLastBooking(id, LocalDateTime.now());
+        Optional<Booking> nextBooking = bookingRepository.findNextBooking(id, LocalDateTime.now());
+        return itemMapper.mapToItemWithBookings(
+                item,
+                lastBooking.orElseGet(Booking::new),
+                nextBooking.orElseGet(Booking::new));
     }
 
     @Override

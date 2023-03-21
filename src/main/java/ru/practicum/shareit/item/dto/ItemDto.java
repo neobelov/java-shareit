@@ -29,5 +29,4 @@ public class ItemDto {
 
     @NotNull(groups = PostInfo.class, message = "Item availability must be sent")
     private Boolean available;
-
 }

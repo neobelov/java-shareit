@@ -1,15 +1,14 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.item.dto.ItemWithBookings;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
 public interface ItemService {
-    void deleteWithOwnerCheck(Long id, Long owner);
+    void delete(Long id, Long owner);
 
-    List<Item> getAllWithOwnerCheck(Long owner);
-
-    List<Item> getAll();
+    List<ItemWithBookings> getAll(Long owner);
 
     List<Item> searchItems(String text);
 
@@ -21,7 +20,7 @@ public interface ItemService {
 
     Item getById(Long id);
 
-    void deleteById(Long id);
+    ItemWithBookings getWithBookingsById(Long id, Long ownerId);
 
     Boolean exists(Long id);
 }

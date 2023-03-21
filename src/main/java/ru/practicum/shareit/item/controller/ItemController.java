@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.validation.PostInfo;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemWithBookings;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.utilities.Constants;
@@ -21,13 +22,13 @@ public class ItemController {
     private final ItemMapper itemMapper = new ItemMapper();
 
     @GetMapping
-    public List<ItemDto> getAllWithOwnerCheck(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long owner) {
-        return itemService.getAllWithOwnerCheck(owner).parallelStream().map(itemMapper::mapToItemDto).collect(Collectors.toList());
+    public List<ItemWithBookings> getAll(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long ownerId) {
+        return itemService.getAll(ownerId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getById(@PathVariable Long itemId) {
-        return itemMapper.mapToItemDto(itemService.getById(itemId));
+    public ItemWithBookings getById(@RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long ownerId, @PathVariable Long itemId) {
+        return itemService.getWithBookingsById(itemId, ownerId);
     }
 
     @GetMapping("/search")
@@ -50,6 +51,6 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     public void delete(@PathVariable Long itemId, @RequestHeader(Constants.SHARER_USER_ID_HTTP_HEADER) Long owner) {
-        itemService.deleteWithOwnerCheck(itemId, owner);
+        itemService.delete(itemId, owner);
     }
 }

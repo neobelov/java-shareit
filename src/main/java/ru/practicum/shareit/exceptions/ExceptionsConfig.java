@@ -52,18 +52,36 @@ public class ExceptionsConfig {
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ErrorResponse handleNotFound(RuntimeException ex) {
+    public ErrorResponse handleNotFound(ResourceNotFoundException ex) {
         log.warn(ex.getMessage());
         return new ErrorResponse("error", ex.getMessage());
     }
 
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     @ExceptionHandler(NoRightsException.class)
-    public ErrorResponse handleForbidden(RuntimeException ex) {
+    public ErrorResponse handleForbidden(NoRightsException ex) {
         log.warn(ex.getMessage());
         return new ErrorResponse("error", ex.getMessage());
     }
 
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UnavailableItemException.class)
+    public ErrorResponse handleItemUnavailable(UnavailableItemException ex) {
+        log.warn(ex.getMessage());
+        return new ErrorResponse("error", ex.getMessage());
+    }
 
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UnsupportedStateException.class)
+    public ErrorResponse handleUnsupportedState(UnsupportedStateException ex) {
+        log.warn(ex.getMessage());
+        return new ErrorResponse(ex.getMessage(), ex.getMessage());
+    }
 
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ChangeApprovedBookingStatusException.class)
+    public ErrorResponse handleUnsupportedState(ChangeApprovedBookingStatusException ex) {
+        log.warn(ex.getMessage());
+        return new ErrorResponse(ex.getMessage(), ex.getMessage());
+    }
 }

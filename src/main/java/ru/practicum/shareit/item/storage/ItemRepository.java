@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    List<Item> findByOwnerEquals(Long owner);
+    List<Item> findByOwnerEqualsOrderById(Long owner);
     @Query(value =
             "FROM Item item " +
             "WHERE item.available = TRUE " +

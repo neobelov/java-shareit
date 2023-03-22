@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = BookingDtoValidator.class)
 public @interface BookingDtoValid {
-    String message() default "Start must be earlier than end";
+    String message() default "Booking dto is not valid";
 
     Class<?>[] groups() default {};
 

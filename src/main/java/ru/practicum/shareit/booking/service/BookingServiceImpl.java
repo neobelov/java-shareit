@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.ChangeApprovedBookingStatusException;
-import ru.practicum.shareit.exceptions.NoRightsException;
 import ru.practicum.shareit.exceptions.ResourceNotFoundException;
 import ru.practicum.shareit.exceptions.UnavailableItemException;
 import ru.practicum.shareit.item.model.Item;

@@ -2,7 +2,6 @@ package ru.practicum.shareit.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.sql.SQLException;
 
 @RestControllerAdvice
 @Slf4j
@@ -80,7 +78,14 @@ public class ExceptionsConfig {
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ChangeApprovedBookingStatusException.class)
-    public ErrorResponse handleUnsupportedState(ChangeApprovedBookingStatusException ex) {
+    public ErrorResponse handleBadRequest(ChangeApprovedBookingStatusException ex) {
+        log.warn(ex.getMessage());
+        return new ErrorResponse(ex.getMessage(), ex.getMessage());
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CommentNoBookingException.class)
+    public ErrorResponse handleBadRequest(CommentNoBookingException ex) {
         log.warn(ex.getMessage());
         return new ErrorResponse(ex.getMessage(), ex.getMessage());
     }

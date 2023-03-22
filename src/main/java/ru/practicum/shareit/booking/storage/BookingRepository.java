@@ -1,7 +1,5 @@
 package ru.practicum.shareit.booking.storage;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,13 +24,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT bk " +
             "FROM Booking bk " +
             "WHERE bk.start <= :now AND bk.end >= :now AND bk.booker.id = :bookerId " +
-            "ORDER BY bk.start DESC")
+            "ORDER BY bk.id ASC")
     List<Booking> findCurrentByBookerId(Long bookerId, LocalDateTime now);
 
     @Query("SELECT bk " +
             "FROM Booking bk " +
             "WHERE bk.start <= :now AND bk.end >= :now AND bk.item.owner = :ownerId " +
-            "ORDER BY bk.start DESC")
+            "ORDER BY bk.id ASC")
     List<Booking> findCurrentByOwnerId(Long ownerId, LocalDateTime now);
 
     Optional<Booking> findByIdAndItemOwner(Long bookingId, Long ownerId);
@@ -60,4 +58,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "               WHERE bk1.item.id = :itemId " +
             "               AND bk1.start >= :now)")
     Optional<Booking> findNextBooking(Long itemId, LocalDateTime now);
+    List<Booking> findByBookerIdAndItemIdAndStatusAndStartLessThanEqual(Long bookerId, Long itemId, BookingStatus status, LocalDateTime now);
 }

@@ -9,6 +9,9 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static ru.practicum.shareit.utilities.Constants.DATE_TIME_FORMAT;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,11 +23,11 @@ public class Booking {
     private Long id;
 
     @Column(name="start_date")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime start;
 
     @Column(name="end_date")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime end;
 
     @OneToOne(cascade = CascadeType.ALL)

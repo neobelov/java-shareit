@@ -9,6 +9,8 @@ import ru.practicum.shareit.booking.dto.validation.BookingDtoValid;
 import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
+import static ru.practicum.shareit.utilities.Constants.DATE_TIME_FORMAT;
+
 /**
  * TODO Sprint add-bookings.
  */
@@ -18,10 +20,10 @@ import java.time.LocalDateTime;
 @BookingDtoValid(message = "Start must be earlier than end")
 public class BookingDto {
     private Long id;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     @FutureOrPresent
     private LocalDateTime start;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     @FutureOrPresent
     private LocalDateTime end;
     private Long itemId;

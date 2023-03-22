@@ -3,12 +3,18 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exceptions.CommentNoBookingException;
 import ru.practicum.shareit.exceptions.NoRightsException;
 import ru.practicum.shareit.exceptions.ResourceNotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemWithBookings;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -24,8 +30,10 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
     private final UserService userService;
     private final ItemMapper itemMapper = new ItemMapper();
+    private final CommentMapper commentMapper = new CommentMapper();
 
     @Override
     public Item add(Item item) {
@@ -99,18 +107,38 @@ public class ItemServiceImpl implements ItemService {
     public ItemWithBookings getWithBookingsById(Long id, Long ownerId) {
         Item item = getById(id);
         if (!Objects.equals(item.getOwner(), ownerId)) {
-            return itemMapper.mapToItemWithBookings(item, new Booking(), new Booking());
+            return itemMapper.mapToItemWithBookings(
+                    item,
+                    new Booking(),
+                    new Booking(),
+                    commentRepository.
+                            findByItemId(id).
+                            parallelStream().
+                            map(commentMapper::mapToCommentDto).
+                            collect(Collectors.toList()));
         }
         Optional<Booking> lastBooking = bookingRepository.findLastBooking(id, LocalDateTime.now());
         Optional<Booking> nextBooking = bookingRepository.findNextBooking(id, LocalDateTime.now());
         return itemMapper.mapToItemWithBookings(
                 item,
                 lastBooking.orElseGet(Booking::new),
-                nextBooking.orElseGet(Booking::new));
+                nextBooking.orElseGet(Booking::new),
+                commentRepository.
+                        findByItemId(id).
+                        parallelStream().
+                        map(commentMapper::mapToCommentDto).
+                        collect(Collectors.toList()));
     }
 
     @Override
-    public Boolean exists(Long id) {
-        return itemRepository.existsById(id);
+    public CommentDto addComment(Long itemId, Long bookerId, CommentDto dto) {
+        List<Booking> bookings = bookingRepository.findByBookerIdAndItemIdAndStatusAndStartLessThanEqual(bookerId, itemId, BookingStatus.APPROVED, LocalDateTime.now());
+        if (bookings.isEmpty()) {
+            throw new CommentNoBookingException("You can't comment on item if you haven't booked it");
+        }
+        Booking booking = bookings.get(0);
+        Comment comment = commentMapper.mapToComment(dto, booking.getItem(), booking.getBooker());
+        return commentMapper.mapToCommentDto(
+                commentRepository.save(comment));
     }
 }

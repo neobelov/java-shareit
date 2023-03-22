@@ -3,7 +3,8 @@ package ru.practicum.shareit.item.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.model.Booking;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +23,6 @@ public class ItemWithBookings {
     private ItemBookingDto lastBooking;
 
     private ItemBookingDto nextBooking;
+
+    private List<CommentDto> comments;
 }

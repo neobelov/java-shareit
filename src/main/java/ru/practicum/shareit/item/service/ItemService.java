@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemWithBookings;
 import ru.practicum.shareit.item.model.Item;
 
@@ -22,5 +23,5 @@ public interface ItemService {
 
     ItemWithBookings getWithBookingsById(Long id, Long ownerId);
 
-    Boolean exists(Long id);
+    CommentDto addComment(Long itemId, Long bookerId, CommentDto dto);
 }

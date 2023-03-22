@@ -83,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemWithBookings> getAll(Long owner) {
         List<Item> items = itemRepository.findByOwnerEqualsOrderById(owner);
-        return items.parallelStream().map(i->getWithBookingsById(i.getId(),owner)).collect(Collectors.toList());
+        return items.parallelStream().map(i -> getWithBookingsById(i.getId(),owner)).collect(Collectors.toList());
     }
 
     @Override
@@ -111,11 +111,11 @@ public class ItemServiceImpl implements ItemService {
                     item,
                     new Booking(),
                     new Booking(),
-                    commentRepository.
-                            findByItemId(id).
-                            parallelStream().
-                            map(commentMapper::mapToCommentDto).
-                            collect(Collectors.toList()));
+                    commentRepository
+                            .findByItemId(id)
+                            .parallelStream()
+                            .map(commentMapper::mapToCommentDto)
+                            .collect(Collectors.toList()));
         }
         Optional<Booking> lastBooking = bookingRepository.findLastBooking(id, LocalDateTime.now());
         Optional<Booking> nextBooking = bookingRepository.findNextBooking(id, LocalDateTime.now());
@@ -123,11 +123,11 @@ public class ItemServiceImpl implements ItemService {
                 item,
                 lastBooking.orElseGet(Booking::new),
                 nextBooking.orElseGet(Booking::new),
-                commentRepository.
-                        findByItemId(id).
-                        parallelStream().
-                        map(commentMapper::mapToCommentDto).
-                        collect(Collectors.toList()));
+                commentRepository
+                        .findByItemId(id)
+                        .parallelStream()
+                        .map(commentMapper::mapToCommentDto)
+                        .collect(Collectors.toList()));
     }
 
     @Override

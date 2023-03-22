@@ -40,7 +40,7 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getBookings(@RequestHeader(Constants.SHARER_USER_ID) Long bookerId,
-                                                           @RequestParam(value = "state", defaultValue = "ALL") BookingState state){
+                                                           @RequestParam(value = "state", defaultValue = "ALL") BookingState state) {
         return bookingService.getBookings(bookerId, state);
     }
 

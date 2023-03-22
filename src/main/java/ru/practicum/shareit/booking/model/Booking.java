@@ -22,11 +22,11 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="start_date")
+    @Column(name = "start_date")
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime start;
 
-    @Column(name="end_date")
+    @Column(name = "end_date")
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime end;
 
@@ -38,7 +38,7 @@ public class Booking {
     @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker;
 
-    @Column(name="status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 }

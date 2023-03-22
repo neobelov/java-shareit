@@ -28,6 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
     private final UserService userService;
     private final BookingMapper bookingMapper = new BookingMapper();
+
     @Override
     public Booking add(BookingDto dto, Long bookerId) {
         Booking booking = bookingMapper.mapToBooking(dto);

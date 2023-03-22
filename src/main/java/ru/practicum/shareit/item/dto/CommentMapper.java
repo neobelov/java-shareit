@@ -17,6 +17,7 @@ public class CommentMapper {
                 comment.getAuthor().getName(),
                 comment.getCreated());
     }
+
     public Comment mapToComment(CommentDto dto, Item item, User booker) {
         return new Comment(
                 dto.getId(),

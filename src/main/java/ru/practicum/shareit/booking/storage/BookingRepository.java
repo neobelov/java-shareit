@@ -13,12 +13,19 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBookerIdOrderByStartDesc(Long bookerId);
+
     List<Booking> findByBookerIdAndEndBeforeOrderByStartDesc(Long bookerId, LocalDateTime now);
+
     List<Booking> findByBookerIdAndStartAfterOrderByStartDesc(Long bookerId,LocalDateTime now);
+
     List<Booking> findByBookerIdAndStatusOrderByStartDesc(Long bookerId,BookingStatus status);
+
     List<Booking> findByItemOwnerOrderByStartDesc(Long ownerId);
+
     List<Booking> findByItemOwnerAndEndBeforeOrderByStartDesc(Long ownerId, LocalDateTime now);
+
     List<Booking> findByItemOwnerAndStartAfterOrderByStartDesc(Long ownerId,LocalDateTime now);
+
     List<Booking> findByItemOwnerAndStatusOrderByStartDesc(Long ownerId,BookingStatus status);
 
     @Query("SELECT bk " +
@@ -49,6 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "               WHERE bk1.item.id = :itemId " +
             "               AND bk1.start <= :now)")
     Optional<Booking> findLastBooking(Long itemId, LocalDateTime now);
+
     @Query("SELECT bk " +
             "FROM Booking bk " +
             "WHERE bk.item.id = :itemId " +
@@ -58,5 +66,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "               WHERE bk1.item.id = :itemId " +
             "               AND bk1.start >= :now)")
     Optional<Booking> findNextBooking(Long itemId, LocalDateTime now);
+
     List<Booking> findByBookerIdAndItemIdAndStatusAndStartLessThanEqual(Long bookerId, Long itemId, BookingStatus status, LocalDateTime now);
 }

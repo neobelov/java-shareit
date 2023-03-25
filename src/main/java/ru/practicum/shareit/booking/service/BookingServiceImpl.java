@@ -27,17 +27,17 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemService itemService;
     private final UserService userService;
-    private final BookingMapper bookingMapper = new BookingMapper();
+    private final BookingMapper bookingMapper;
 
     @Override
     public Booking add(BookingDto dto, Long bookerId) {
         Booking booking = bookingMapper.mapToBooking(dto);
         Item item = itemService.getById(dto.getItemId());
         if (Objects.equals(item.getOwner(), bookerId)) {
-            throw new ResourceNotFoundException("you can't book your own item");
+            throw new ResourceNotFoundException("you can't book your own item with id " + dto.getItemId());
         }
         if (!item.getAvailable()) {
-            throw new UnavailableItemException("you can't book unavailable item");
+            throw new UnavailableItemException("you can't book unavailable item with id " + dto.getItemId());
         }
         booking.setItem(item);
         booking.setBooker(userService.getById(bookerId));
@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
         }
         Booking booking = bookingOptional.get();
         if (booking.getStatus() == BookingStatus.APPROVED) {
-            throw new ChangeApprovedBookingStatusException("you can't change approved booking status");
+            throw new ChangeApprovedBookingStatusException("you can't change approved booking status for booking " + bookingId);
         }
         if (isApproved) {
             booking.setStatus(BookingStatus.APPROVED);

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
 
-    private final UserMapper userMapper = new UserMapper();
+    private final UserMapper userMapper;
 
     @GetMapping
     public List<UserDto> getAll() {

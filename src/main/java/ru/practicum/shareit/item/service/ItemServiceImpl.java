@@ -32,8 +32,8 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
-    private final ItemMapper itemMapper = new ItemMapper();
-    private final CommentMapper commentMapper = new CommentMapper();
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
 
     @Override
     public Item add(Item item) {
@@ -134,7 +134,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(Long itemId, Long bookerId, CommentDto dto) {
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemIdAndStatusAndStartLessThanEqual(bookerId, itemId, BookingStatus.APPROVED, LocalDateTime.now());
         if (bookings.isEmpty()) {
-            throw new CommentNoBookingException("You can't comment on item if you haven't booked it");
+            throw new CommentNoBookingException("You can't comment on item + "+itemId+" if you haven't booked it");
         }
         Booking booking = bookings.get(0);
         Comment comment = commentMapper.mapToComment(dto, booking.getItem(), booking.getBooker());

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final ItemMapper itemMapper = new ItemMapper();
+    private final ItemMapper itemMapper;
 
     @GetMapping
     public List<ItemWithBookings> getAll(@RequestHeader(Constants.SHARER_USER_ID) Long ownerId) {

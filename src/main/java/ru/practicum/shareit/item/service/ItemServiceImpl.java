@@ -134,7 +134,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(Long itemId, Long bookerId, CommentDto dto) {
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemIdAndStatusAndStartLessThanEqual(bookerId, itemId, BookingStatus.APPROVED, LocalDateTime.now());
         if (bookings.isEmpty()) {
-            throw new CommentNoBookingException("You can't comment on item + "+itemId+" if you haven't booked it");
+            throw new CommentNoBookingException("You can't comment on item " + itemId + " if you haven't booked it");
         }
         Booking booking = bookings.get(0);
         Comment comment = commentMapper.mapToComment(dto, booking.getItem(), booking.getBooker());

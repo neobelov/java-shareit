@@ -9,7 +9,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class LoggingServiceImpl implements LoggingService{
+public class LoggingServiceImpl implements LoggingService {
 
     @Override
     public void displayReq(HttpServletRequest request, Object body) {
@@ -20,11 +20,11 @@ public class LoggingServiceImpl implements LoggingService{
         reqMessage.append("method = [").append(request.getMethod()).append("]");
         reqMessage.append(" path = [").append(request.getRequestURI()).append("] ");
 
-        if(!parameters.isEmpty()) {
+        if (!parameters.isEmpty()) {
             reqMessage.append(" parameters = [").append(parameters).append("] ");
         }
 
-        if(!Objects.isNull(body)) {
+        if (!Objects.isNull(body)) {
             reqMessage.append(" body = [").append(body).append("]");
         }
 
@@ -37,7 +37,7 @@ public class LoggingServiceImpl implements LoggingService{
         Map<String,String> headers = getHeaders(response);
         respMessage.append("RESPONSE ");
         respMessage.append("method = [").append(request.getMethod()).append("]");
-        if(!headers.isEmpty()) {
+        if (!headers.isEmpty()) {
             respMessage.append(" ResponseHeaders = [").append(headers).append("]");
         }
         respMessage.append(" responseBody = [").append(body).append("]");
@@ -48,7 +48,7 @@ public class LoggingServiceImpl implements LoggingService{
     private Map<String,String> getHeaders(HttpServletResponse response) {
         Map<String,String> headers = new HashMap<>();
         Collection<String> headerMap = response.getHeaderNames();
-        for(String str : headerMap) {
+        for (String str : headerMap) {
             headers.put(str,response.getHeader(str));
         }
         return headers;
@@ -57,7 +57,7 @@ public class LoggingServiceImpl implements LoggingService{
     private Map<String,String> getParameters(HttpServletRequest request) {
         Map<String,String> parameters = new HashMap<>();
         Enumeration<String> params = request.getParameterNames();
-        while(params.hasMoreElements()) {
+        while (params.hasMoreElements()) {
             String paramName = params.nextElement();
             String paramValue = request.getParameter(paramName);
             parameters.put(paramName,paramValue);

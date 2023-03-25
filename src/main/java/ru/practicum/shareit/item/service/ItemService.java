@@ -1,17 +1,27 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemWithBookings;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.storage.Storage;
 
 import java.util.List;
 
-public interface ItemService extends Storage<Item> {
-    Item patch(Item obj);
+public interface ItemService {
+    void delete(Long id, Long owner);
 
-    Item deleteWithOwnerCheck(Integer id, Integer owner);
-
-    List<Item> getAllWithOwnerCheck(Integer owner);
+    List<ItemWithBookings> getAll(Long owner);
 
     List<Item> searchItems(String text);
 
+    Item add(Item item);
+
+    Item update(Item item);
+
+    Item replace(Item item);
+
+    Item getById(Long id);
+
+    ItemWithBookings getWithBookingsById(Long id, Long ownerId);
+
+    CommentDto addComment(Long itemId, Long bookerId, CommentDto dto);
 }
